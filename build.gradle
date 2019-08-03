@@ -1,9 +1,14 @@
-plugins {
-    `java-library`
-}
+apply plugin: 'java'
 
 repositories {
     jcenter()
+}
+
+tasks.withType(AbstractCompile) {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-parameters", "-proc:none"]
 }
 
 dependencies {
