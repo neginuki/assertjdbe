@@ -25,10 +25,27 @@ public class AssertDBEquals {
 			return dataSource.getConnection().getCatalog();
 		} catch (SQLException e) {
 			throw new IllegalStateException(
-					"データソースの名前解決が出来ませんでした。接続先の情報を確認してください。または getDataSourceName をオーバーライドしてカスタマイズしてください。　dataSource: "
-							+ dataSource,
-					e);
+					"could not resolve the connect identifier specified. DataSource: " + dataSource, e);
 		}
+	}
+
+	public void assertEquals() {
+
+	}
+
+	protected ExpectedWorkbook createExpectedWorkbook() {
+		return new ExpectedWorkbook();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		buf.append("dataSources");
+		dataSources.forEach(ds -> {
+			buf.append("\n" + ds);
+		});
+
+		return buf.toString();
 	}
 
 	private class DataSourceEntry {
@@ -38,6 +55,11 @@ public class AssertDBEquals {
 		public DataSourceEntry(String name, DataSource dataSource) {
 			this.name = name;
 			this.dataSource = dataSource;
+		}
+
+		@Override
+		public String toString() {
+			return "name: " + name + ", dataSource: " + dataSource;
 		}
 	}
 }
