@@ -1,5 +1,6 @@
 package world.sake.assertjdbe;
 
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -12,54 +13,71 @@ import javax.sql.DataSource;
  */
 public class AssertDBEquals {
 
-	private final List<DataSourceEntry> dataSources;
+    private final String testName;
 
-	public AssertDBEquals(DataSource... dataSources) {
-		this.dataSources = Arrays.stream(dataSources).map(dataSource -> {
-			return new DataSourceEntry(getDataSourceName(dataSource), dataSource);
-		}).collect(Collectors.toList());
-	}
+    private final Path expectedDirectory;
 
-	protected String getDataSourceName(DataSource dataSource) {
-		try {
-			return dataSource.getConnection().getCatalog();
-		} catch (SQLException e) {
-			throw new IllegalStateException(
-					"could not resolve the connect identifier specified. DataSource: " + dataSource, e);
-		}
-	}
+    private final List<DataSourceEntry> dataSources;
 
-	public void assertEquals() {
+    private final ExpectedWorkbook workbook;
 
-	}
+    public AssertDBEquals(String testName, Path expectedDirectory, DataSource... dataSources) {
+        this.testName = testName;
+        this.expectedDirectory = expectedDirectory;
+        this.dataSources = Arrays.asList(dataSources).stream().map(dataSource -> {
+            return new DataSourceEntry(getDataSourceName(dataSource), dataSource);
+        }).collect(Collectors.toList());
 
-	protected ExpectedWorkbook createExpectedWorkbook() {
-		return new ExpectedWorkbook();
-	}
+        workbook = createExpectedWorkbook();
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder buf = new StringBuilder();
-		buf.append("dataSources");
-		dataSources.forEach(ds -> {
-			buf.append("\n" + ds);
-		});
+    protected String getDataSourceName(DataSource dataSource) {
+        try {
+            return dataSource.getConnection().getCatalog();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not resolve the connect identifier specified. DataSource: " + dataSource, e);
+        }
+    }
 
-		return buf.toString();
-	}
+    public void assertEquals(Runnable execute) {
+        execute.run();
+    }
 
-	private class DataSourceEntry {
-		final String name;
-		final DataSource dataSource;
+    public void assertEquals(String checkpointName, Runnable execute) {
 
-		public DataSourceEntry(String name, DataSource dataSource) {
-			this.name = name;
-			this.dataSource = dataSource;
-		}
+    }
 
-		@Override
-		public String toString() {
-			return "name: " + name + ", dataSource: " + dataSource;
-		}
-	}
+    protected ExpectedWorkbook createExpectedWorkbook() {
+        return new ExpectedWorkbook();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("AssertDBEquals Settings");
+        sb.append("\ntestName: " + testName);
+        sb.append("\nexpectedDirectory: " + expectedDirectory);
+        sb.append("\nDataSources:");
+        dataSources.forEach(ds -> {
+            sb.append("\n  " + ds);
+        });
+
+        sb.append("\n" + workbook);
+
+        return sb.toString();
+    }
+
+    private class DataSourceEntry {
+        final String name;
+        final DataSource dataSource;
+
+        public DataSourceEntry(String name, DataSource dataSource) {
+            this.name = name;
+            this.dataSource = dataSource;
+        }
+
+        @Override
+        public String toString() {
+            return "name: " + name + ", dataSource: " + dataSource;
+        }
+    }
 }
