@@ -13,6 +13,8 @@ import javax.sql.DataSource;
  */
 public class AssertDBEquals {
 
+    private final Class<?> testClass;
+
     private final String testName;
 
     private final Path expectedDirectory;
@@ -21,7 +23,8 @@ public class AssertDBEquals {
 
     private final ExpectedWorkbook workbook;
 
-    public AssertDBEquals(String testName, Path expectedDirectory, DataSource... dataSources) {
+    public AssertDBEquals(Class<?> testClass, String testName, Path expectedDirectory, DataSource... dataSources) {
+        this.testClass = testClass;
         this.testName = testName;
         this.expectedDirectory = expectedDirectory;
         this.dataSources = Arrays.asList(dataSources).stream().map(dataSource -> {
@@ -54,8 +57,9 @@ public class AssertDBEquals {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("AssertDBEquals Settings");
-        sb.append("\ntestName: " + testName);
-        sb.append("\nexpectedDirectory: " + expectedDirectory);
+        sb.append("\nTestClass: " + testClass.getName());
+        sb.append("\nTestName: " + testName);
+        sb.append("\nExpectedDirectory: " + expectedDirectory);
         sb.append("\nDataSources:");
         dataSources.forEach(ds -> {
             sb.append("\n  " + ds);

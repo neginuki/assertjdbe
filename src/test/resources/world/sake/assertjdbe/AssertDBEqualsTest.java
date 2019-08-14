@@ -28,7 +28,7 @@ public class AssertDBEqualsTest {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(getClass().getName().replace('.', '/') + ".class");
         Path expectedDirectory = Paths.get(resource.toURI()).getParent();
 
-        assertjdbe = new AssertDBEquals(testName.getMethodName(), expectedDirectory, mockDataSource("test")) {
+        assertjdbe = new AssertDBEquals(getClass(), testName.getMethodName(), expectedDirectory, mockDataSource("test")) {
             @Override
             protected ExpectedWorkbook createExpectedWorkbook() {
                 return new ExpectedWorkbook() {
