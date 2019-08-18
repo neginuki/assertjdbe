@@ -12,11 +12,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExpectedWorkbook {
 
-    private Path xlsx;
+    private final Path xlsx;
 
-    private Workbook workbook;
+    private final Workbook workbook;
 
-    protected void load(Path xlsx) {
+    public ExpectedWorkbook(Path xlsx) {
         this.xlsx = xlsx;
         try {
             this.workbook = WorkbookFactory.create(getExpectedXlsx().toFile());
@@ -31,11 +31,12 @@ public class ExpectedWorkbook {
 
     protected String getDataSourceName() {
         String name = getExpectedXlsx().getFileName().toString();
-        if (name.contains("\\#")) {
+        int beginIndex = name.indexOf("#");
+
+        if (beginIndex < 0) {
             return "";
         }
 
-        int beginIndex = name.indexOf("#");
         int endIndex = name.indexOf(".");
 
         return name.substring(beginIndex + 1, endIndex);
@@ -47,8 +48,8 @@ public class ExpectedWorkbook {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Expected Workbook:")//
-                .append("\n  settings sheet name: " + getSettingsSheetName()//
+        StringBuilder sb = new StringBuilder("\n  Expected Workbook:")//
+                .append("\n    settings sheet name: " + getSettingsSheetName()//
                 );
 
         return sb.toString();

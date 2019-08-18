@@ -30,8 +30,14 @@ public class AssertDBEqualsTest {
 
         assertjdbe = new AssertDBEquals(getClass(), testName.getMethodName(), expectedDirectory, mockDataSource("test")) {
             @Override
-            protected ExpectedWorkbook createExpectedWorkbook() {
-                return new ExpectedWorkbook() {
+            public void assertEquals(String checkpointName, Runnable runnable) {
+                super.assertEquals(checkpointName, runnable);
+                System.out.println(this);
+            }
+
+            @Override
+            protected ExpectedWorkbook loadExpectedWorkbook(Path xlsx) {
+                return new ExpectedWorkbook(xlsx) {
                     @Override
                     protected String getSettingsSheetName() {
                         return "#SETTINGS";
@@ -42,8 +48,13 @@ public class AssertDBEqualsTest {
     }
 
     @Test
-    public void to_string() {
-        System.out.println(assertjdbe);
+    public void case1() {
+        assertjdbe.assertEquals(() -> {});
+    }
+
+    @Test
+    public void case2() {
+        assertjdbe.assertEquals(() -> {});
     }
 
     private DataSource mockDataSource(String catalogName) {
