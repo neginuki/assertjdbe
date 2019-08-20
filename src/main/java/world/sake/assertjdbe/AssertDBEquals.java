@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import org.assertj.db.type.Changes;
+
 /**
 * @author neginuki
 */
@@ -54,6 +56,10 @@ public class AssertDBEquals {
     public void assertEquals(String checkpointName, Runnable runnable) {
         this.checkpointName = Optional.ofNullable(checkpointName);
         workbooks = prepareWorkbooks();
+    }
+
+    protected void assertEquals(Changes changes, Path expectedXlsx) {
+        // todo
     }
 
     protected List<ExpectedWorkbook> prepareWorkbooks() {
