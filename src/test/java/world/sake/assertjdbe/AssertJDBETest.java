@@ -16,22 +16,19 @@ import org.junit.rules.TestName;
 import world.sake.assertjdbe.mock.MockConnection;
 import world.sake.assertjdbe.mock.MockDataSource;
 
-public class AssertDBEqualsTest {
+public class AssertJDBETest {
 
     @Rule
     public TestName testName = new TestName();
 
-    private AssertDBEquals assertjdbe;
+    private AssertJDBE assertjdbe;
 
     @Before
     public void setUp() throws Exception {
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(getClass().getName().replace('.', '/') + ".class");
-        Path expectedDirectory = Paths.get(resource.toURI()).getParent();
-
-        assertjdbe = new AssertDBEquals(getClass(), testName.getMethodName(), expectedDirectory, mockDataSource("test")) {
+        assertjdbe = new AssertJDBE(prepareTestInfo(), mockDataSource("test")) {
             @Override
-            public void assertEquals(String checkpointName, Runnable runnable) {
-                super.assertEquals(checkpointName, runnable);
+            public void assertDB(String checkpointName, Runnable runnable) {
+                super.assertDB(checkpointName, runnable);
                 System.out.println(this);
             }
 
@@ -47,14 +44,21 @@ public class AssertDBEqualsTest {
         };
     }
 
+    private TestInfo prepareTestInfo() throws Exception {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(getClass().getName().replace('.', '/') + ".class");
+        Path expectedDirectory = Paths.get(resource.toURI()).getParent();
+
+        return new TestInfo(getClass(), testName.getMethodName(), expectedDirectory);
+    }
+
     @Test
     public void case1() {
-        assertjdbe.assertEquals(() -> {});
+        assertjdbe.assertDB(() -> {});
     }
 
     @Test
     public void case2() {
-        assertjdbe.assertEquals(() -> {});
+        assertjdbe.assertDB(() -> {});
     }
 
     private DataSource mockDataSource(String catalogName) {

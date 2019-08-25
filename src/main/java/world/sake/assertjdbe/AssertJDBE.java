@@ -14,27 +14,21 @@ import org.assertj.db.type.Changes;
 /**
 * @author neginuki
 */
-public class AssertDBEquals {
+public class AssertJDBE {
 
-    private final Class<?> testClass;
-
-    private final String testName;
-
-    private final Path expectedDirectory;
-
-    private final List<DataSourceEntry> dataSources;
+    private final TestInfo testInfo;
 
     private List<ExpectedWorkbook> workbooks;
 
-    private Optional<String> checkpointName = Optional.empty();
+    private final List<DataSourceEntry> dataSources;
 
-    public AssertDBEquals(Class<?> testClass, String testName, Path expectedDirectory, DataSource... dataSources) {
-        this.testClass = testClass;
-        this.testName = testName;
-        this.expectedDirectory = expectedDirectory;
+    public AssertJDBE(TestInfo testInfo, DataSource... dataSources) {
+        this.testInfo = testInfo;
+
         this.dataSources = Arrays.asList(dataSources).stream().map(dataSource -> {
             return new DataSourceEntry(getDataSourceName(dataSource), dataSource);
         }).collect(Collectors.toList());
+
     }
 
     protected String getDataSourceName(DataSource dataSource) {
@@ -49,12 +43,12 @@ public class AssertDBEquals {
         return new ExpectedWorkbook(xlsx);
     }
 
-    public void assertEquals(Runnable runnable) {
-        assertEquals(null, runnable);
+    public void assertDB(Runnable runnable) {
+        assertDB(null, runnable);
     }
 
-    public void assertEquals(String checkpointName, Runnable runnable) {
-        this.checkpointName = Optional.ofNullable(checkpointName);
+    public void assertDB(String checkpointName, Runnable runnable) {
+        testInfo.setCheckpointName(checkpointName);
         workbooks = prepareWorkbooks();
     }
 
@@ -63,34 +57,22 @@ public class AssertDBEquals {
     }
 
     protected List<ExpectedWorkbook> prepareWorkbooks() {
-        return Arrays.asList(expectedDirectory.toFile().listFiles((dir, name) -> {
-            return name.matches(getLoadFilePattern());
+        return Arrays.asList(testInfo.getExpectedDirectory().toFile().listFiles((dir, name) -> {
+            return name.matches(testInfo.getLoadFilePattern());
         })).stream().map(file -> {
             return loadExpectedWorkbook(file.toPath());
         }).collect(Collectors.toList());
     }
 
-    protected String getLoadFilePattern() {
-        return String.format("%s%s_%s.*\\.xlsx", //
-                testClass.getSimpleName(), //
-                checkpointName.map(name -> "_" + name).orElse(""), //
-                testName//
-        );
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("AssertDBEquals Settings");
-        sb.append("\nTestClass: " + testClass.getName());
-        sb.append("\nTestName: " + testName);
-        sb.append("\nExpectedDirectory: " + expectedDirectory);
+        sb.append(testInfo);
 
         sb.append("\nDataSources:");
         dataSources.forEach(ds -> {
             sb.append("\n  " + ds);
         });
-
-        sb.append("\nLoad File Pattern: " + getLoadFilePattern());
 
         sb.append("\nExpected Workbooks:");
         Optional.of(workbooks).ifPresent(books -> {
