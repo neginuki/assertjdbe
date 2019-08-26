@@ -67,7 +67,7 @@ public class AssertJDBE {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("AssertDBEquals Settings");
-        sb.append(testInfo);
+        sb.append("\n" + testInfo);
 
         sb.append("\nDataSources:");
         dataSources.forEach(ds -> {

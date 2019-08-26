@@ -53,11 +53,11 @@ public class TestInfo {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TestInfo:") //
-                .append("\nTestClass: " + getTestClass().getName())
-                .append("\nTestName: " + getTestName())
-                .append("\nExpectedDirectory: " + getExpectedDirectory())
-                .append("\nCheckpointName: " + getCheckpointName().orElse(""))
-                .append("\nLoad File Pattern: " + getLoadFilePattern());
+                .append("\n  TestClass: " + getTestClass().getName())
+                .append("\n  TestName: " + getTestName())
+                .append("\n  ExpectedDirectory: " + getExpectedDirectory())
+                .append("\n  CheckpointName: " + getCheckpointName().orElse(""))
+                .append("\n  Load File Pattern: " + getLoadFilePattern());
 
         return sb.toString();
     }
