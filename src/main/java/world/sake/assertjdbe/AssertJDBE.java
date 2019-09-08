@@ -48,11 +48,10 @@ public class AssertJDBE {
     }
 
     public void assertDB(String checkpointName, Runnable runnable) {
-        testInfo.setCheckpointName(checkpointName);
         workbooks = prepareWorkbooks();
     }
 
-    protected void assertEquals(Changes changes, Path expectedXlsx) {
+    protected void assertDB(Changes changes, Path expectedXlsx) {
         // todo
     }
 

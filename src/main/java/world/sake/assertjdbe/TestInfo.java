@@ -1,7 +1,6 @@
 package world.sake.assertjdbe;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
 /**
  * @author neginuki
@@ -13,8 +12,6 @@ public class TestInfo {
     private final String testName;
 
     private final Path expectedDirectory;
-
-    private Optional<String> checkpointName = Optional.empty();
 
     public TestInfo(Class<?> testClass, String testName, Path expectedDirectory) {
         this.testClass = testClass;
@@ -34,18 +31,9 @@ public class TestInfo {
         return expectedDirectory;
     }
 
-    public void setCheckpointName(String name) {
-        checkpointName = Optional.ofNullable(name);
-    }
-
-    public Optional<String> getCheckpointName() {
-        return checkpointName;
-    }
-
     protected String getLoadFilePattern() {
-        return String.format("%s%s_%s.*\\.xlsx", //
-                getTestClass().getSimpleName(), //
-                getCheckpointName().map(name -> "_" + name).orElse(""), //
+        return String.format("%s_%s.*\\.xlsx", //
+                getTestClass().getSimpleName(), //               
                 getTestName()//
         );
     }
@@ -56,7 +44,6 @@ public class TestInfo {
                 .append("\n  TestClass: " + getTestClass().getName())
                 .append("\n  TestName: " + getTestName())
                 .append("\n  ExpectedDirectory: " + getExpectedDirectory())
-                .append("\n  CheckpointName: " + getCheckpointName().orElse(""))
                 .append("\n  Load File Pattern: " + getLoadFilePattern());
 
         return sb.toString();
