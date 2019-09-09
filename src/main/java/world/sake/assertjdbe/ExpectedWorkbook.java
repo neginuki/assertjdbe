@@ -48,7 +48,7 @@ public class ExpectedWorkbook {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("\n  Expected Workbook:")//
+        StringBuilder sb = new StringBuilder("Expected Workbook:")//
                 .append("\n    settings sheet name: " + getSettingsSheetName()//
                 );
 

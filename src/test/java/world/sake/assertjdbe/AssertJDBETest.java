@@ -27,8 +27,8 @@ public class AssertJDBETest {
     public void setUp() throws Exception {
         assertjdbe = new AssertJDBE(prepareTestInfo(), mockDataSource("test")) {
             @Override
-            public void assertDB(String checkpointName, Runnable runnable) {
-                super.assertDB(checkpointName, runnable);
+            public void assertDB(Runnable runnable) {
+                super.assertDB(runnable);
                 System.out.println(this);
             }
 

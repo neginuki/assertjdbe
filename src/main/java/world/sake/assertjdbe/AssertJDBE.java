@@ -39,15 +39,7 @@ public class AssertJDBE {
         }
     }
 
-    protected ExpectedWorkbook loadExpectedWorkbook(Path xlsx) {
-        return new ExpectedWorkbook(xlsx);
-    }
-
     public void assertDB(Runnable runnable) {
-        assertDB(null, runnable);
-    }
-
-    public void assertDB(String checkpointName, Runnable runnable) {
         workbooks = prepareWorkbooks();
     }
 
@@ -61,6 +53,10 @@ public class AssertJDBE {
         })).stream().map(file -> {
             return loadExpectedWorkbook(file.toPath());
         }).collect(Collectors.toList());
+    }
+
+    protected ExpectedWorkbook loadExpectedWorkbook(Path xlsx) {
+        return new ExpectedWorkbook(xlsx);
     }
 
     @Override
