@@ -1,6 +1,9 @@
 package world.sake.assertjdbe;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author neginuki
@@ -13,10 +16,19 @@ public class TestInfo {
 
     private final Path expectedDirectory;
 
-    public TestInfo(Class<?> testClass, String testName, Path expectedDirectory) {
+    public TestInfo(Class<?> testClass, String testName) {
         this.testClass = testClass;
         this.testName = testName;
-        this.expectedDirectory = expectedDirectory;
+        this.expectedDirectory = getURL(testClass);
+    }
+
+    private static Path getURL(Class<?> testClass) {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(testClass.getName().replace('.', '/') + ".class");
+        try {
+            return Paths.get(resource.toURI()).getParent();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Class<?> getTestClass() {

@@ -45,10 +45,10 @@ public class AssertJDBETest {
     }
 
     private TestInfo prepareTestInfo() throws Exception {
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(getClass().getName().replace('.', '/') + ".class");
-        Path expectedDirectory = Paths.get(resource.toURI()).getParent();
+        //URL resource = Thread.currentThread().getContextClassLoader().getResource(getClass().getName().replace('.', '/') + ".class");
+        //Path expectedDirectory = Paths.get(resource.toURI()).getParent();
 
-        return new TestInfo(getClass(), testName.getMethodName(), expectedDirectory);
+        return new TestInfo(getClass(), testName.getMethodName());
     }
 
     @Test
