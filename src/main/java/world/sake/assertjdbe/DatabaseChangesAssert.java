@@ -5,6 +5,9 @@ package world.sake.assertjdbe;
  * 
  * @author neginuki
  */
-public class DatabaseAssert {
+public class DatabaseChangesAssert {
 
+    public void isEquals() {
+        
+    }
 }

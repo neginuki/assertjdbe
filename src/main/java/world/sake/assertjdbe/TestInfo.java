@@ -19,10 +19,10 @@ public class TestInfo {
     public TestInfo(Class<?> testClass, String testName) {
         this.testClass = testClass;
         this.testName = testName;
-        this.expectedDirectory = getURL(testClass);
+        this.expectedDirectory = resolveExpectedDirectoryPath(testClass);
     }
 
-    private static Path getURL(Class<?> testClass) {
+    protected static Path resolveExpectedDirectoryPath(Class<?> testClass) {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(testClass.getName().replace('.', '/') + ".class");
         try {
             return Paths.get(resource.toURI()).getParent();
